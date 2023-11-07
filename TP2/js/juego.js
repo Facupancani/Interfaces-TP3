@@ -21,7 +21,7 @@ let modo = "4 en linea";
 let goal = 4;
 let ganador = 0;
 const juego = this;
-const duracion = 5;
+const duracion = 15;
 const temporizador = new Temporizador(canvas, ctx, duracion, this);
 
 function start() {
