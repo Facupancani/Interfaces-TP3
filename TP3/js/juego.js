@@ -507,29 +507,31 @@ function figuraClickeada(x, y) {
 
 function seleccionarModo(modo) {
       switch (modo) {
+            
+             case "4 en linea":
+                  cuatroEnLinea();
+                  break;
             case "5 en linea":
                   cincoEnLinea();
                   break;
-
-            case "6 en linea":
+      case "6 en linea":
                   seisEnLinea()
                   break;
-
-            case "4 en linea":
-                  cuatroEnLinea();
-                  break;
-
             default:
                   return;
       }
 }
 
 function click(e) {
-      let m = getMousePos(e);
+     let m = getMousePos(e);
       let clickBtn = btnClickeado(m.x, m.y);
+      if (clickBtn != null) {
+            seleccionarModo(clickBtn.textoBoton);
+      }
       if (clickBtn != null) {
             elegirFicha();
       }
+
 
       var clickX = e.clientX - canvas.getBoundingClientRect().left;
       var clickY = e.clientY - canvas.getBoundingClientRect().top;
