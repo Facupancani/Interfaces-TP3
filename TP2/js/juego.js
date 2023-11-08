@@ -20,16 +20,19 @@ let botonMenu = new Boton(ctx, canvas.width - 350, canvas.height - 60, "Menu", 1
 let modo = "4 en linea";
 let goal = 4;
 let ganador = 0;
+let eligiendo = -1;
+let fichaJ1 = new Image();
+let fichaJ2 = new Image();
 const juego = this;
-const duracion = 5;
+const duracion = 15;
 const temporizador = new Temporizador(canvas, ctx, duracion, this);
 
 function start() {
-      var fondo = new Image();
-      fondo.src = './resources/icos/juego/spyfondo.jpg';
+      var fondoInic = new Image();
+      fondoInic.src = './resources/icos/juego/spyfondo.jpg';
       temporizador.detenerTemporizador();
-      fondo.onload = function () {
-            ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
+      fondoInic.onload = function () {
+            ctx.drawImage(fondoInic, 0, 0, canvas.width, canvas.height);
             menu();
             dibujarBotonMute()
       }
@@ -37,7 +40,6 @@ function start() {
 
 function menu() {
       reanudarMusica();
-
       ctx.textAlign = "left";
       var centro = (canvas.width - 200) / 2;
 
@@ -72,33 +74,77 @@ function menu() {
 
 }
 
-function elegirFicha() {
-      // Dibuja el texto con bordes
-      var centro = (canvas.width - 200) / 2;
+function elegirFicha(figura = lastClickedFigure) {
+      clearCanvas();
+      botones = [];
+      fondo.src = './resources/icos/juego/fondoingame.jpg';
+      fondo.onload = function () {
+            ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
+            dibujarBotonMute()
 
-      // Configuración del texto con borde
-      ctx.fillStyle = "white"; // Color del relleno del texto
-      ctx.font = "50px Avenir"; // Fuente y tamaño del texto
+            // Dibuja el texto con bordes
+            var centro = (canvas.width) / 2;
 
-      ctx.font = "25px Avenir"; // Tamaño del segundo texto
-      ctx.lineWidth = 6; // Cambia el ancho del borde para el segundo texto
-      ctx.strokeStyle = "black"; // Color del borde para el segundo texto
-      ctx.strokeText('Jugador 1 elige ficha', centro - 15, 200);
-      ctx.fillText('Jugador 1 elige ficha', centro - 15, 200);
+            // Configuración del texto con borde
+            ctx.fillStyle = "white";
+            ctx.font = "50px Avenir";
 
-      var espiaBlanco = new Image();
-      espiaBlanco.src = './resources/icos/juego/espiaBlanco.png'
+            ctx.font = "25px Avenir";
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "black";
+            ctx.strokeText('Jugador 1 elige ficha', centro - 15, 200);
+            ctx.fillText('Jugador 1 elige ficha', centro - 15, 200);
 
-      var espiaNegro = new Image();
-      espiaNegro.src = './resources/icos/juego/espiaNegro.png'
-      //                               (imagen, x, y, ancho, alto) {
-      espiaBlanco.onload = espiaNegro.onload = function () {
-            let fichaBlanco = new Ficha(espiaBlanco, 440, 310, 100, 4);
-            fichaBlanco.dibujar(ctx);
-            let fichaNegro = new Ficha(espiaNegro, 700, 310, 100, 4);
-            fichaNegro.dibujar(ctx);
+            var espiaBlanco = new Image();
+            espiaBlanco.src = './resources/icos/juego/espiaBlanco.png'
+            var espiaNegro = new Image();
+            espiaNegro.src = './resources/icos/juego/espiaNegro.png'
+            var tom = new Image();
+            tom.src = './resources/icos/juego/tom.png'
+            var jerry = new Image();
+            jerry.src = './resources/icos/juego/jerry.png'
+
+            var fichasCargadas = 0;
+            espiaBlanco.onload = espiaNegro.onload = tom.onload = jerry.onload = function () {
+                  if (fichasCargadas < 4) {
+                        fichasCargadas++;
+                        if (fichasCargadas === 4) {
+                              
+                              let fichaBlanco = new Ficha(espiaBlanco, 480, 310, 100);
+                              fichasJuego.push(fichaBlanco);
+                              let fichaJerry = new Ficha(jerry, 550, 310, 100, 4);
+                              fichasJuego.push(fichaJerry);
+                              let fichaTom = new Ficha(tom, 650, 310, 100, 4);
+                              fichasJuego.push(fichaTom);
+                              let fichaNegro = new Ficha(espiaNegro, 745, 310, 100, 4);
+                              fichasJuego.push(fichaNegro);
+
+                              if (eligiendo == 1 && figura != null) {
+                                    ctx.strokeText('Jugador 2 elige ficha', centro - 15, 200);
+                                    ctx.fillText('Jugador 2 elige ficha', centro - 15, 200);
+                                    fichaJ1.src = figura.getImagen();
+                              } else if (eligiendo == 2 && figura != null) {
+                                    fichaJ2.src = figura.getImagen();
+                              }
+                              fichaBlanco.dibujar(ctx);
+                              fichaJerry.dibujar(ctx);
+                              fichaTom.dibujar(ctx);
+                              fichaNegro.dibujar(ctx);
+                              if (eligiendo == 2) {
+                                    fichasJuego = [];
+                                    clearCanvas()
+                                    reiniciar();
+                              }
+                        }
+                  }
+            }
+
+            if(eligiendo == -1){
+                  eligiendo ++;
+                  elegirFicha();
+            }
+           
       }
-
 }
 
 function cuatroEnLinea() {
@@ -128,7 +174,7 @@ function cuatroEnLinea() {
             if (fichasCargadas < 2) {
                   fichasCargadas++;
                   if (fichasCargadas === 2) {
-                        repartirFichas(espiaBlanco, espiaNegro, 21);
+                        repartirFichas(21);
                   }
             }
             temporizador.reiniciarTemporizador();
@@ -167,7 +213,7 @@ function cincoEnLinea() {
             if (fichasCargadas < 2) {
                   fichasCargadas++;
                   if (fichasCargadas === 2) {
-                        repartirFichas(espiaBlanco, espiaNegro, 21);
+                        repartirFichas( 21);
                   }
             }
             temporizador.reiniciarTemporizador();
@@ -208,7 +254,7 @@ function seisEnLinea() {
             if (fichasCargadas < 2) {
                   fichasCargadas++;
                   if (fichasCargadas === 2) {
-                        repartirFichas(espiaBlanco, espiaNegro, 28);
+                        repartirFichas(28);
                   }
             }
             temporizador.reiniciarTemporizador();
@@ -222,18 +268,18 @@ function seisEnLinea() {
       modo = "6 en linea";
 }
 
-function repartirFichas(fichaJ1, fichaJ2, cantFichas) {
+function repartirFichas(cantFichas) {
       for (let i = 0; i < cantFichas; i++) {
             const x = Math.random() * (230 - 10) + 10;
             const y = Math.random() * (500 - 300) + 300;
-            const ficha = new Ficha(fichaJ1, x, y, 100, 1,this);
+            const ficha = new Ficha(fichaJ1, x, y, 100, 1, this);
             ficha.dibujar(ctx);
             fichasJuego.push(ficha);
       }
       for (let i = 0; i < cantFichas; i++) {
             const x = Math.random() * (1200 - 1000) + 1000;
             const y = Math.random() * (500 - 300) + 300;
-            const ficha = new Ficha(fichaJ2, x, y, 100, 2,this);
+            const ficha = new Ficha(fichaJ2, x, y, 100, 2, this);
             ficha.dibujar(ctx);
             fichasJuego.push(ficha);
       }
@@ -246,7 +292,7 @@ function esTurno(ficha) {
       return false;
 }
 
-function getGanador(){
+function getGanador() {
       return ganador;
 }
 
@@ -273,15 +319,13 @@ function definirGanador(jugador = turno, tiempo = false) {
       if (tiempo == true) {
             if (jugador == 1) ganador = 2;
             if (jugador == 2) ganador = 1;
-      }else
-      ganador = jugador;
+      } else
+            ganador = jugador;
       setTimeout(function () {
             temporizador.detenerTemporizador();
             ctx.globalAlpha = 0.7;
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            console.log("ganador jugador " + ganador);
 
             ctx.globalAlpha = 1;
 
@@ -396,17 +440,23 @@ function onMouseDown(e) {
 function onMouseUp(e) {
       if (lastClickedFigure != undefined) {
             let pos = lastClickedFigure.getPosition()
-            let clickBox = boxClickeado(pos.x, pos.y, tableroJuego);
-            if (clickBox != null) {
-                  let casilla = tableroJuego.getCasillaLibre(clickBox.getColumna());
-                  if (casilla != null) {
-                        lastClickedFigure.visible = false;
-                        limpiar();
-                        temporizador.actualizarTemporizador();
-                        insertarFicha(casilla, lastClickedFigure);
-                        lastClickedFigure.visible = true;
-                        terminarTurno()
+            if (tableroJuego) {
+                  let clickBox = boxClickeado(pos.x, pos.y, tableroJuego);
+                  if (clickBox != null) {
+                        let casilla = tableroJuego.getCasillaLibre(clickBox.getColumna());
+                        if (casilla != null) {
+                              lastClickedFigure.visible = false;
+                              limpiar();
+                              temporizador.actualizarTemporizador();
+                              insertarFicha(casilla, lastClickedFigure);
+                              lastClickedFigure.visible = true;
+                              terminarTurno()
+                        }
                   }
+            }
+            if (eligiendo < 2) {
+                  eligiendo++;
+                  elegirFicha(lastClickedFigure);
             }
             lastClickedFigure = null;
       }
@@ -478,7 +528,7 @@ function click(e) {
       let m = getMousePos(e);
       let clickBtn = btnClickeado(m.x, m.y);
       if (clickBtn != null) {
-            seleccionarModo(clickBtn.textoBoton);
+            elegirFicha();
       }
 
       var clickX = e.clientX - canvas.getBoundingClientRect().left;
@@ -509,8 +559,9 @@ function reiniciar() {
 
 function llamarMenu() {
       turno = 1;
+      eligiendo = 0;
       ganador = 0;
-      tableroJuego = [];
+      tableroJuego = null;
       fichasJuego = [];
       botones = [];
       temporizador.reiniciarTemporizador();
@@ -554,11 +605,11 @@ function ajustarVolumen(volumen) {
 }
 
 function sonidoFicha() {
-      if(!isMuted){
+      if (!isMuted) {
             sfx.playbackRate = 3.5;
             sfx.play();
       }
-  }
+}
 
 function dibujarBotonMute() {
       ctx.font = "30px Arial";

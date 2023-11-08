@@ -1,5 +1,5 @@
 class Ficha {
-    constructor(imagen, x, y, radio, jugador, escala = 8, juego) {
+    constructor(imagen, x, y, radio, jugador, escala = 8) {
         this.imagen = imagen;
         this.posX = x;
         this.posY = y;
@@ -8,7 +8,6 @@ class Ficha {
         this.colocada = false;
         this.visible = true;
         this.jugador = jugador;
-        var juego = juego;
     }
 
     dibujar(contexto) {
@@ -100,6 +99,10 @@ class Ficha {
         
         // Iniciar la animación
         cuadroDeAnimacion();
+    }
+
+    getImagen(){
+        return this.imagen.src;
     }
 
     colocar() {

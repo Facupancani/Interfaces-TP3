@@ -8,7 +8,6 @@ derC.forEach((boton) => {
     const currentPosition = window.getComputedStyle(carrusel).transform;
     let translateX = 0;
 
-    console.log(currentPosition);
     if (currentPosition !== 'none') {
       const matrix = currentPosition.split(', ');
       translateX = parseInt(matrix[4]) - 1190;
@@ -80,7 +79,6 @@ derG.forEach((boton) => {
     const currentPosition = window.getComputedStyle(carrusel).transform;
     let translateX = 0;
 
-    console.log(currentPosition);
     if (currentPosition !== 'none') {
       const matrix = currentPosition.split(', ');
       translateX = parseInt(matrix[4]) - 1190;
@@ -243,8 +241,7 @@ if (loader) {
   // Llama a la función startLoading
   startLoading();
 } else {
-  // Si loader no existe, puedes manejarlo de alguna manera, como mostrar un mensaje de error
-  console.error("El elemento loaderNum no se encontró en el documento.");
+
 }
 
 
